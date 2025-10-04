@@ -3,13 +3,13 @@ import { Text, View } from "react-native";
 export default function Index() {
   return (
     <View
-      style={{
+      style ={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text>Edit app/search.tsx to dedit this screen.</Text>
     </View>
-  );
+  )
 }
