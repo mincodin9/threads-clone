@@ -1,20 +1,19 @@
+import { AuthContext } from "@/app/_layout";
+import SideMenu from "@/components/SideMenu";
+import { Ionicons } from "@expo/vector-icons";
 import { usePathname, useRouter } from "expo-router";
-import { Dimensions, Image, PixelRatio, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useContext, useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  const isLoggedIn = false;
-
-  console.log("pathname", pathname);
-  console.log("insets", insets);
-
-  const { width, height } = Dimensions.get("window");
-  console.log(`화면 너비: ${width}dp, 높이 $${height}dp`);
-  console.log(`화면 너비: ${width*PixelRatio.get()}px, 높이: ${height*PixelRatio.get()}px`);
-
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const { user } = useContext(AuthContext);
+  const isLoggedIn = !!user;
+  
   return (
     <SafeAreaView 
       style={[
@@ -23,16 +22,34 @@ export default function Index() {
       ]}
     >
       <View style={styles.header}>
+        {!isLoggedIn && (
+          <TouchableOpacity 
+            style={styles.menuButton}
+            onPress={() => {
+              setIsSideMenuOpen(true)
+            }}
+         >
+          <Ionicons name="menu" size={24} color="black" />
+        </TouchableOpacity>
+        )}
+        <SideMenu
+          isVisible={isSideMenuOpen}
+          onClose={() => setIsSideMenuOpen(false)}
+        />
         <Image 
           source={require("@/assets/images/react-logo.png")}
           style={styles.headerLogo} 
         />
         {!isLoggedIn && (
-          <TouchableOpacity style={styles.loginButton}
-          onPress={() => router.navigate(`/login`)}
-        >
-          <Text style={styles.loginButtonText}>로그인</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => {
+              console.log("loginButton onPress");
+              router.navigate(`/login`);
+            }}
+          >
+            <Text style={styles.loginButtonText}>로그인</Text>
+          </TouchableOpacity>
         )}
       </View>
       {isLoggedIn && (
@@ -99,5 +116,10 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: "white",
+  },
+  menuButton: {
+    position: "absolute",
+    left: 20,
+    top: 10,
   },
 });
