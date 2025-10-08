@@ -25,7 +25,7 @@ if(__DEV__) {
               id: "mincodin9",
               name: "mincodin9",
               description: "🐬 lover, passionate programmer",
-              profileImage: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fmypetlife.co.kr%2F146821%2F&psig=AOvVaw22dwDpNCevcaeutOpvuK7T&ust=1759937753435000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCNj-qZi1kpADFQAAAAAdAAAAABAE"
+              profileImageUrl: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA0MDJfODcg%2FMDAxNzQzNTY5NzUxMzQy.0B1j0ngDIm1YG497nH_4A71FGVnMQdgtub867eAqoYog.lAHEFDVUZnReM0J6yXu4nr5zbJk5yuIcaI1AuoNQKZEg.JPEG%2FIMG_5123.jpg&type=sc960_832"
             },
           };
         } else {
