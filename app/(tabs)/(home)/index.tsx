@@ -1,16 +1,17 @@
 import Post from "@/components/Post";
 import { useRouter } from "expo-router";
 import {
+  ScrollView,
   StyleSheet,
-  useColorScheme,
-  View
+  useColorScheme
 } from "react-native";
 export default function Index() {
   const router = useRouter();
   const colorScheme = useColorScheme();
 
   return (
-    <View
+    <ScrollView
+      nestedScrollEnabled
       style={[
         styles.container,
         colorScheme === "dark" ? styles.containerDark : styles.containerLight,
@@ -28,20 +29,22 @@ export default function Index() {
           reposts: 2,
           isVerified: true,
           avatar: "https://randomuser.me/api/portraits/men/2.jpg",
-          image: `https://picsum.photos/800/600?random=${Math.random()}`,
+          images: [`https://picsum.photos/800/600?random=${Math.random()}`],
           location: [37.125, 124.97],
         }}
       />
       <Post
         item={{
           id: "1",
-          username: "zerocho",
-          displayName: "Zerocho",
-          content: "Hello, world!",
+          username: "mincodin9",
+          displayName: "Mincodin9",
+          content: "My website is Zerocho.com",
           timeAgo: "1 hour ago",
           likes: 10,
           comments: 5,
           reposts: 2,
+          link: "https://www.zerocho.com",
+          linkThumbnail: "https://www.zerocho.com/favicon.png",
           isVerified: true,
           avatar: "https://randomuser.me/api/portraits/men/1.jpg",
         }}
@@ -72,11 +75,14 @@ export default function Index() {
           reposts: 2,
           isVerified: true,
           avatar: "https://randomuser.me/api/portraits/women/3.jpg",
-          image: `https://picsum.photos/800/600?random=${Math.random()}`,
+          images: [
+            `https://picsum.photos/800/600?random=${Math.random()}`,
+            `https://picsum.photos/800/600?random=${Math.random()}`,
+          ],
           location: [37.125, 124.97],
         }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
