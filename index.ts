@@ -10,7 +10,6 @@ import {
   RestSerializer,
   Server,
 } from "miragejs";
-import { type User } from "./app/_layout";
 
 declare global {
   interface Window {
@@ -18,7 +17,7 @@ declare global {
   }
 }
 
-let mincodin9: User;
+let mincodin9: any;
 
 if(__DEV__) {
   if( window.server) {
@@ -30,6 +29,7 @@ if(__DEV__) {
       user: Model.extend({
         posts: hasMany("post"),
         activities: hasMany("activity"),
+        searches: hasMany("search"),
       }),
       post: Model.extend({
         user: belongsTo("user"),
@@ -37,6 +37,9 @@ if(__DEV__) {
       activity: Model.extend({
         user: belongsTo("user"),
       }),
+      search: Model.extend({
+        user: belongsTo("user"),
+      })
     },
     serializers: {
       post: RestSerializer.extend({
@@ -64,7 +67,7 @@ if(__DEV__) {
         content: () => faker.lorem.paragraph(),
         imageUrls: () =>
           Array.from({ length: Math.floor(Math.random() * 3) }, () =>
-            faker.image.urlLoremFlickr()
+            faker.image.urlLoremFlickr({ category: "nature"})
           ),
         likes: () => Math.floor(Math.random() * 100),
         comments: () => Math.floor(Math.random() * 100),
@@ -74,7 +77,7 @@ if(__DEV__) {
     seeds(server) {
       mincodin9 = server.create("user", {
         id: "mincodin9",
-        name: "Mincodin9",
+        name: "Min",
         description: "🐬 lover, passionate programmer",
         profileImageUrl: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA0MDJfODcg%2FMDAxNzQzNTY5NzUxMzQy.0B1j0ngDIm1YG497nH_4A71FGVnMQdgtub867eAqoYog.lAHEFDVUZnReM0J6yXu4nr5zbJk5yuIcaI1AuoNQKZEg.JPEG%2FIMG_5123.jpg&type=sc960_832",
       });
@@ -83,6 +86,9 @@ if(__DEV__) {
         server.createList("post", 5, {
           user,
         });
+      });
+      server.createList("post", 5, {
+        user: mincodin9,
       });
     },
     routes() {
@@ -96,20 +102,45 @@ if(__DEV__) {
             user: schema.find("user", "mincodin9"),
           });
         });
-        return new Response(200, {}, { posts });
+        return posts;
       })
 
       this.get("/posts", (schema, request) => {
-        console.log("user.all", schema.all("user").models);
-        const cursor = parseInt((request.queryParams.cursor as string) || "0");
-        const posts = schema.all("post").models.slice(cursor, cursor + 10);
-        return new Response(200, {}, { posts });
+        console.log("request", request.queryParams);
+        let posts = schema.all("post");
+        if(request.queryParams.type === "following") {
+          posts = posts.filter((post) => post.user?.id === mincodin9?.id);
+        }
+        let targetIndex = -1;
+        if(request.queryParams.cursor) {
+          targetIndex = posts.models.findIndex(
+            (v) => v.id === request.queryParams.cursor
+          );
+        }
+        return posts.slice(targetIndex + 1, targetIndex + 11)
       });
 
       this.get("/post/:id", (schema, request) => {
         const post = schema.find("post", request.params.id);
-        const comments = schema.all("post").models.slice(0, 10);
-        return new Response(200, {}, { post, comments });
+        const comments = schema.all("post").slice(0, 10);
+        return { post, comments };
+      });
+
+      this.get("/users/:id/:type", (schema, request) => {
+        console.log("request", request.queryParams);
+        let posts = schema.all("post");
+        if(request.params.type === "threads") {
+          posts = posts.filter((post) => post.user?.id === request.params.id);
+        } else if(request.params.type === "reposts") {
+          posts = posts.filter((post) => post.user?.id !== request.params.id);
+        }
+        let targetIndex = -1;
+        if(request.queryParams.cursor) {
+          targetIndex = posts.models.findIndex(
+            (v) => v.id === request.queryParams.cursor
+          );
+        }
+        return posts.slice(targetIndex + 1, targetIndex + 11);
       });
 
       this.post("/login", (schema, request) => {

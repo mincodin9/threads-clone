@@ -74,8 +74,8 @@ export default function PostScreen() {
         <Post
           item={{
             id: "1",
-            username: "zerocho",
-            displayName: "Zerocho",
+            username: "mincodin9",
+            displayName: "Min",
             content: "Hello, world!",
             timeAgo: "1 hour ago",
             likes: 10,
