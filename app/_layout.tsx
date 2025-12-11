@@ -1,13 +1,23 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Asset } from "expo-asset";
 import Constants from "expo-constants";
+import * as Notifications from 'expo-notifications';
 import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { Alert, Animated, StyleSheet, View } from "react-native";
+import { Alert, Animated, Linking, StyleSheet, View } from "react-native";
 import Toast, { BaseToast } from "react-native-toast-message";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 // Instruct SplashScreen not to hide yet, we want to do this manually
 SplashScreen.preventAutoHideAsync().catch(() => {
@@ -140,6 +150,18 @@ function AnimatedSplashScreen({
         // TODO: validating access token
       ]);
       await SplashScreen.hideAsync();
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        return Linking.openSettings();
+      }
+      const notification = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "App is ready! 🎉",
+          body: "Try uploading new thread now.",
+        },
+        trigger: null,
+      });
+      console.log("notification", notification);
     } catch (e) {
       console.error(e);
     } finally {
