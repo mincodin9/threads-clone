@@ -79,7 +79,7 @@ export default function Modal() {
     threads.forEach((thread, index) => {
       formData.append(`posts[${index}][id]`, thread.id);
       formData.append(`posts[${index}][content]`, thread.text);
-      formData.append(`posts[${index}][userId]`, "mincodin9");
+      formData.append(`posts[${index}][userId]`, "zerohch0");
       formData.append(
         `posts[${index}][location]`,
         JSON.stringify(thread.location)
@@ -312,7 +312,7 @@ export default function Modal() {
                 : styles.usernameLight,
             ]}
           >
-            mincodin9
+            zerohch0
           </Text>
           {index > 0 && (
             <TouchableOpacity
